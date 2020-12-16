@@ -41,10 +41,15 @@ class PageRobots(Tag):
         try:
             if page.pagesitemapproperties.noindex:
                 content.append('noindex')
+            else:
+                content.append('index')
             if page.pagesitemapproperties.noarchive:
                 content.append('noarchive')
             if page.pagesitemapproperties.robots_extra:
                 content.append(page.pagesitemapproperties.robots_extra)
+            if page.pagesitemapproperties.robots_extra.find('follow') == -1:
+                content.append('follow')
+            
             return '<meta name="robots" content="%s">' % ','.join(content)
         except ObjectDoesNotExist:
             return ''
