@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, print_function, unicode_literals
-
 from classytags.arguments import Argument
 from classytags.core import Options, Tag
 from cms.templatetags.cms_tags import _get_page_by_untyped_arg
@@ -11,21 +8,22 @@ from django.core.exceptions import ObjectDoesNotExist
 register = template.Library()
 
 
-@register.tag(name='page_robots')
+@register.tag(name="page_robots")
 class PageRobots(Tag):
     """
     Generates the robots meta tag according to the extension attributes
     """
-    name = 'page_robots'
+
+    name = "page_robots"
     options = Options(
-        Argument('page', required=False),
-        Argument('site_id', required=False),
+        Argument("page", required=False),
+        Argument("site_id", required=False),
     )
 
     def render_tag(self, context, page, site_id):
-        request = context.get('request')
+        request = context.get("request")
         if not request:
-            return ''
+            return ""
         if not site_id:
             site_id = get_current_site(request).pk
         if not page:
@@ -37,14 +35,14 @@ class PageRobots(Tag):
             page = _get_page_by_untyped_arg(page, request, site_id)
         content = []
         if not page:
-            return ''
+            return ""
         try:
             if page.pagesitemapproperties.noindex:
                 content.append('noindex')
             else:
                 content.append('index')
             if page.pagesitemapproperties.noarchive:
-                content.append('noarchive')
+                content.append("noarchive")
             if page.pagesitemapproperties.robots_extra:
                 content.append(page.pagesitemapproperties.robots_extra)
             if page.pagesitemapproperties.robots_extra.find('follow') == -1:
@@ -52,4 +50,4 @@ class PageRobots(Tag):
             
             return '<meta name="robots" content="%s">' % ','.join(content)
         except ObjectDoesNotExist:
-            return ''
+            return ""
